@@ -2,11 +2,8 @@
 from .models import *
 from .serializers import bookCommentSerializer,bookPostSerializer,bookPostCreateSerializer,bookCommentCreateSerializer
 from rest_framework import viewsets
-
-# 토큰 형식으로 바꿔줘야 함.
-from rest_framework.authentication import SessionAuthentication,BasicAuthentication
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from .permissions import IsOwnerOrReadOnly
+from .permissions import CustomReadOnly
+from rest_framework.filters import SearchFilter
 
 
 
@@ -30,7 +27,7 @@ class bookPostViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user, profile=profile)
 
 
-
+# 장바구니 기능
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])  # 회원가입한 User라면 모두 진입 가능
 def bucket_post(request, pk):
@@ -68,9 +65,13 @@ class bookCommentViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user, profile=profile)
 
 
-class bookSearchViewSet(viewsets.ViewSet):
 
-    def list(self,request):
-        queryset=bookSearch.objects.all()
-        serializer=bookSearchViewSet(queryset,many=True)
-        return Response(serializer.data)
+# 검색 기능
+class bookSearchViewSet(viewsets.ModelViewSet):
+    queryset=bookPost.objects.all()
+    serializer_class = bookPostSerializer
+
+    filter_backends = [SearchFilter]
+
+    search_fields=['title']
+
