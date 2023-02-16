@@ -15,6 +15,6 @@ router.register('bookPostComment',bookPostViewSet,basename='bookPostComment')
 # 스캔한 책 정보
 router.register('bookSearch',bookSearchViewSet,basename='bookSearch')
 
-urlpatterns=[
-    path('',include(router.urls))
+urlpatterns=router.urls+[
+    path('bucket/<int:pk>/', bucket_post, name='bucket_post')
 ]
