@@ -18,4 +18,4 @@ class CustomReadOnly(permissions.BasePermission):
         """전체 객체에 대한 권한"""
         if request.method in permissions.SAFE_METHODS:
             return True
-        return obj.author == request.user
+        return obj.user == request.user

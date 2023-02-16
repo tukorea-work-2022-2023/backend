@@ -35,7 +35,7 @@ class bookPostSerializer(TaggitSerializer,serializers.ModelSerializer):
 class bookPostCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = bookPost
-        fields = ('title', 'author','publisher','content','image','sell_price','summary','state','state_image','like')
+        fields = ('title', 'author','publisher','content','image','sell_price','summary','state','state_image')
 
 
 

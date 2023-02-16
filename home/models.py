@@ -38,11 +38,11 @@ class bookPost(models.Model):
 
 
     # 12. 책 요약
-    summary = models.TextField(verbose_name="책 요약")
+    summary = models.TextField(null=False,default = '' ,verbose_name="책 요약")
 
 
     # 13. 책 상태
-    state= models.CharField(max_length=100, verbose_name ="책 상태")
+    state= models.CharField(null=False,default = '' ,max_length=100, verbose_name ="책 상태")
 
 
     # 14. 카테고리
@@ -55,6 +55,9 @@ class bookPost(models.Model):
 
     # 16. 책 상태 사진
     state_image = models.ImageField(upload_to='post/', default='default.png')
+
+    # 17. profile
+    profile=models.ForeignKey(Profile,null=False,default = '' ,on_delete=models.CASCADE,blank=True)
 
 
     # 조회 할 때마다 업데이트
@@ -69,7 +72,7 @@ class bookPost(models.Model):
 class bookComment(models.Model):
     book_post=models.ForeignKey(bookPost,related_name='comments',null=False,blank=False,on_delete=models.CASCADE)
     user=models.ForeignKey(User,null=False,blank=False,on_delete=models.CASCADE)
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, null=False,default = '' ,on_delete=models.CASCADE)
     created_at = models.DateField(auto_now_add=True, null=False, blank=False)
     comment = models.TextField()
 
