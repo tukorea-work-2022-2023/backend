@@ -1,6 +1,6 @@
 from django.db import models
 from django.urls import reverse
-#from account.models import User
+from account.models import User,Profile
 from taggit.managers import TaggableManager #태그 기능을 함
 
 class bookPost(models.Model):
@@ -18,8 +18,8 @@ class bookPost(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name ="생성 일자")
 
     # 6. 작성자
-    # user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, related_name='book_posts',
-    #                          verbose_name ="작성자")
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, related_name='book_posts',
+                         verbose_name ="작성자")
 
     # 7. 책 설명
     content = models.TextField(verbose_name ="책 설명")
@@ -46,11 +46,11 @@ class bookPost(models.Model):
 
 
     # 14. 카테고리
-    category_id=models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE, related_name='book_posts',
-                             verbose_name ="카테고리")
+    #category_id=models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE, related_name='book_posts',
+     #                        verbose_name ="카테고리")
 
     # 15. 찜
-    bucket = models.ManyToManyField(User)
+    like = models.ManyToManyField(User)
 
 
     # 16. 책 상태 사진

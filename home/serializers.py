@@ -1,7 +1,8 @@
 from django.core import serializers
 from rest_framework import serializers
 from account.models import User
-from .models import bookPost,bookComment,bookSearch
+from account.serializers import ProfileSerializer
+from .models import bookPost,bookComment
 from taggit.serializers import TaggitSerializer,TagListSerializerField
 
 
@@ -34,12 +35,7 @@ class bookPostSerializer(TaggitSerializer,serializers.ModelSerializer):
 class bookPostCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = bookPost
-        fields = ('title', 'author','publisher','content','image','sell_price','summary','state','category_id','state_image')
+        fields = ('title', 'author','publisher','content','image','sell_price','summary','state','state_image','like')
 
-
-class bookSearchSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=bookSearch
-        fields='__all__'
 
 
