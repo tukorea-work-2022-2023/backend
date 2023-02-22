@@ -42,7 +42,7 @@ def like_post(request, pk):
     """찜 기능: GET"""
     post = get_object_or_404(bookPost, pk=pk)
 
-    if request.user == post.author:
+    if request.user == post.user:
         return Response({'status': status.HTTP_403_FORBIDDEN,
                          'message': '본인의 게시글은 찜을 할 수 없습니다.'})
 
