@@ -1,12 +1,14 @@
 from django.contrib import admin
 from django.urls import path,include
+from django.conf import settings
+from django.conf.urls.static import static
 from home import urls
 
 
 urlpatterns = [
 
     #관라자 페이지
-    #path("admin/", admin.site.urls),
+    path("admin/", admin.site.urls),
 
     #restframework 관리자 페이지
     path('api-auth/', include('rest_framework.urls')),
@@ -26,4 +28,8 @@ urlpatterns = [
     #환경설정 탭 페이지
     path("setting/",include('setting.urls')),
 
-]
+    #회원가입/로그인 탭 페이지
+    path("account/",include('account.urls')),
+
+
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
