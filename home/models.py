@@ -28,7 +28,7 @@ class bookPost(models.Model):
     hits = models.PositiveIntegerField(default=0, verbose_name ="조회수")
 
     # 9. 태그
-    tags=TaggableManager(blank=True, verbose_name ="태그")
+    tags=TaggableManager(verbose_name ="태그")
 
     # 10. 책 이미지
     image = models.ImageField(upload_to='post/', default='default.png')

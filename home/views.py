@@ -25,9 +25,12 @@ class bookPostViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['user', 'like']
 
+
+
     def get_serializer_class(self):
         if self.action == 'list' or 'retrieve':  # 전체 목록 또는 1개 조회
             return bookPostSerializer
+
         return bookPostCreateSerializer
 
     def perform_create(self, serializer):

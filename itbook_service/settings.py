@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     'django_filters',
+    'taggit_serializer',
     #"book_search",
 ]
 
