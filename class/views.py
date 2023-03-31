@@ -13,7 +13,8 @@ from selenium.webdriver.chrome.service import Service
 service = Service(ChromeDriverManager().install())
 
 # f-string
-keyword = input('검색어를 입력하시오 : ')
+
+keyword = input('검색어를 입력하시오 : ') # 바코드를 받음
 yt_url = f'https://www.youtube.com/results?search_query={keyword}'
 driver = wb.Chrome(service=service)
 driver.get(yt_url)
@@ -100,5 +101,32 @@ yt_df = pd.DataFrame(yt_dic)
 # yt_df.to_csv('yt_df.csv', encoding='utf-8-sig', index=False)
 
 
+#공백을 0으로 채움
+yt_df['조회수']=yt_df['조회수'].replace('','0')
+yt_df[yt_df['조회수']=='0']
+
+#콤마 제거하기
+yt_df['조회수']=yt_df['조회수'].astype(str).str.replace(',','')
+
+yt_df=yt_df.astype({'조회수':'int'})
+
+#조회수 많은 순으로 정렬
+yt_df=yt_df.sort_values(by=['조회수'], ascending=False)
+
+yt_df = yt_df.reset_index(drop=True)
+
+max_ten_title=[]
+max_ten_link=[]
+max_ten_created=[]
+max_ten_view=[]
 
 
+for i in range(10):
+    max_ten_title.append(yt_df['영상제목'][i])
+    max_ten_link.append(yt_df['영상주소'][i])
+    max_ten_created.append(yt_df['생성일자'][i])
+    max_ten_view.append(yt_df['조회수'][i])
+
+
+for i in range(10):
+    print(str(i+1)+'.'+' '+max_ten_title[i]+':'+max_ten_link[i]+' , '+str(max_ten_view[i])+' , '+str(max_ten_created[i]))
