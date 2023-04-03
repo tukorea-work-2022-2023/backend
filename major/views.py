@@ -1,3 +1,89 @@
-from django.shortcuts import render
+#from django.shortcuts import render
+from .models import *
+from .serializers import majorCommentSerializer,majorPostSerializer,majorPostCreateSerializer,majorCommentCreateSerializer
+from rest_framework import viewsets
+from rest_framework.decorators import api_view,permission_classes
+from rest_framework.authentication import BasicAuthentication,SessionAuthentication
+from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 
-# Create your views here.
+
+from django_filters.rest_framework import DjangoFilterBackend
+from .permissions import CustomReadOnly
+from rest_framework.filters import SearchFilter
+
+
+
+
+# bookPost의 목록, detail 보여주기, 수정하기, 삭제하기 모두 가능
+
+class majorPostViewSet(viewsets.ModelViewSet):
+    queryset = majorPost.objects.all()
+    authentication_classes = [BasicAuthentication,SessionAuthentication]
+    permission_classes = [CustomReadOnly,IsAuthenticated]
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['user', 'like']
+
+
+
+    def get_serializer_class(self):
+        if self.action == 'list' or 'retrieve':  # 전체 목록 또는 1개 조회
+            return majorPostSerializer
+
+        return majorPostCreateSerializer
+
+    def perform_create(self, serializer):
+        profile = Profile.objects.get(user=self.request.user)
+        serializer.save(author=self.request.user, profile=profile)
+
+
+# 장바구니 기능
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])  # 회원가입한 User라면 모두 진입 가능
+def like_post(request, pk):
+    """찜 기능: GET"""
+    post = get_object_or_404(bookPost, pk=pk)
+
+    if request.user == post.user:
+        return Response({'status': status.HTTP_403_FORBIDDEN,
+                         'message': '본인의 게시글은 찜을 할 수 없습니다.'})
+
+    elif request.user in post.bucket.all():
+        post.like.remove(request.user)
+    else:
+        post.like.add(request.user)
+    return Response({'status': 'ok'})
+
+
+
+
+
+
+# comment 보여주기, 수정하기, 삭제하기 모두 가능
+class majorCommentViewSet(viewsets.ModelViewSet):
+    """댓글 등록/조회/수정/삭제"""
+    queryset = majorComment.objects.all()
+    authentication_classes = [BasicAuthentication, SessionAuthentication]
+    permission_classes = [CustomReadOnly,IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.action == 'list' or 'retrieve':
+            return majorCommentSerializer
+        return majorCommentCreateSerializer
+
+    def perform_create(self, serializer):
+        profile = Profile.objects.get(user=self.request.user)
+        serializer.save(user=self.request.user, profile=profile)
+
+
+
+# 검색 기능
+class majorSearchViewSet(viewsets.ModelViewSet):
+    queryset=majorPost.objects.all()
+    serializer_class = majorPostSerializer
+
+    filter_backends = [SearchFilter]
+
+    search_fields=['title']
+

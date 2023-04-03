@@ -1,5 +1,108 @@
 from django.db import models
 from django.urls import reverse
-#from django.managers import TaggableManager #태그 기능을 함
+from account.models import User,Profile
+from taggit.managers import TaggableManager #태그 기능을 함
 
-# Create your models here.
+class majorPost(models.Model):
+
+    CLASS_NUM = {
+
+        ('one','1학년'),
+        ('two','2학년'),
+        ('three','3학년'),
+        ('four','4학년')
+
+    }
+
+
+    # 1. 책 제목
+    title=models.CharField(max_length=128, verbose_name ="책 제목")
+
+    # 2. 책 작가
+    author=models.CharField(max_length=100, verbose_name ="책 작가")
+
+    # 3. 출판사
+    publisher=models.CharField(max_length=100, verbose_name ="출판사")
+
+    # 5. 생성 일자
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name ="생성 일자")
+
+    # 6. 작성자
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, related_name='major_posts',
+                         verbose_name ="작성자")
+
+    # 7. 책 설명
+    content = models.TextField(verbose_name ="책 설명")
+
+    # 8. 조회수
+    hits = models.PositiveIntegerField(default=0, verbose_name ="조회수")
+
+    # 9. 태그
+    tags=TaggableManager(verbose_name ="태그")
+
+    # 10. 책 이미지
+    image = models.ImageField(upload_to='post/', default='default.png')
+
+    # 11. 대여 금액
+    sell_price=models.IntegerField(default=0, verbose_name = "대여 금액")
+
+
+    # 12. 책 요약
+    summary = models.TextField(null=False,default = '' ,verbose_name="책 요약")
+
+
+    # 13. 책 상태
+    state= models.CharField(null=False,default = '' ,max_length=100, verbose_name ="책 상태")
+
+
+    # 14. 카테고리
+    #category_id=models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE, related_name='book_posts',
+     #                        verbose_name ="카테고리")
+
+    # 15. 찜
+    like = models.ManyToManyField(User)
+
+
+    # 16. 책 상태 사진
+    state_image = models.ImageField(upload_to='post/', default='default.png')
+
+    # 17. profile
+    profile=models.ForeignKey(Profile,null=False,default = '' ,on_delete=models.CASCADE,blank=True)
+
+    # 18. 전공
+    major=models.CharField(max_length=80,choices=CLASS_NUM, null=True, verbose_name = "전공")
+
+    # 19. 수업명
+    class_name=models.CharField(null=False, default = '' ,max_length=100, verbose_name = "수업명")
+
+
+    # 조회 할 때마다 업데이트
+    def update_counter(self):
+        self.hits = self.hits + 1
+        self.save()
+
+
+
+
+# 댓글 달기
+class majorComment(models.Model):
+    major_post=models.ForeignKey(majorPost,related_name='comments',null=False,blank=False,on_delete=models.CASCADE)
+    user=models.ForeignKey(User,null=False,blank=False,on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, null=False,default = '' ,on_delete=models.CASCADE)
+    created_at = models.DateField(auto_now_add=True, null=False, blank=False)
+    comment = models.TextField()
+
+    class Meta:
+        db_table = 'major_comment'
+
+
+# 스터디
+class Study(models.Model):
+    major_post=models.ForeignKey(majorPost,related_name='major_study',null=False,blank=False,on_delete=models.CASCADE)
+    user=models.ForeignKey(User,null=False,blank=False,on_delete=models.CASCADE,related_name='user_study')
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE,related_name='profile_study')
+    created_at = models.DateField(auto_now_add=True, null=False, blank=False)
+    headcount = models.PositiveIntegerField(default=0, verbose_name ="스터디 인원")
+    study_period = models.DurationField()
+    class Meta:
+        db_table = 'major_study'
