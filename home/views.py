@@ -6,6 +6,9 @@ from rest_framework.decorators import api_view,permission_classes
 from rest_framework.authentication import BasicAuthentication,SessionAuthentication
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
+import json
+
+
 
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -18,6 +21,8 @@ from rest_framework.filters import SearchFilter
 # bookPost의 목록, detail 보여주기, 수정하기, 삭제하기 모두 가능
 
 class bookPostViewSet(viewsets.ModelViewSet):
+
+
     queryset = bookPost.objects.all()
     authentication_classes = [BasicAuthentication,SessionAuthentication]
     permission_classes = [CustomReadOnly,IsAuthenticated]
@@ -29,13 +34,27 @@ class bookPostViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == 'list' or 'retrieve':  # 전체 목록 또는 1개 조회
+
             return bookPostSerializer
 
         return bookPostCreateSerializer
 
     def perform_create(self, serializer):
         profile = Profile.objects.get(user=self.request.user)
-        serializer.save(author=self.request.user, profile=profile)
+        #serializer.save(user=self.request.user, profile=profile)
+        # tags_str을 파싱하여 tags_list로 변환
+        tags = self.request.data.get('tags')
+
+        if tags is None:
+            tags_list = []
+        else:
+            try:
+                tags_list = json.loads(tags)
+            except ValueError:
+                tags_list = []
+        serializer.save(user=self.request.user, profile=profile, tags_list=tags_list)
+        instance = serializer.instance
+        instance.tags.set(tags_list)
 
 
 # 장바구니 기능

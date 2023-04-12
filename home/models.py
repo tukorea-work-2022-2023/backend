@@ -3,13 +3,25 @@ from django.urls import reverse
 from account.models import User,Profile
 from taggit.managers import TaggableManager #태그 기능을 함
 
+
 class bookPost(models.Model):
+
+
+    BOOK_STATE = {
+
+        ('very good', '매우 좋음'),
+        ('good', '좋음'),
+        ('soso', '보통'),
+        ('not bad', '나쁘지 않음'),
+        ('bad', '나쁨'),
+
+    }
 
     # 1. 책 제목
     title=models.CharField(max_length=128, verbose_name ="책 제목")
 
     # 2. 책 작가
-    author=models.CharField(max_length=100, verbose_name ="책 작가")
+    writer = models.CharField(max_length=100, verbose_name ="책 작가")
 
     # 3. 출판사
     publisher=models.CharField(max_length=100, verbose_name ="출판사")
@@ -28,7 +40,7 @@ class bookPost(models.Model):
     hits = models.PositiveIntegerField(default=0, verbose_name ="조회수")
 
     # 9. 태그
-    tags=TaggableManager(verbose_name ="태그")
+    tags=TaggableManager(verbose_name ="태그",blank=True)
 
     # 10. 책 이미지
     image = models.ImageField(upload_to='post/', default='default.png')
@@ -42,7 +54,7 @@ class bookPost(models.Model):
 
 
     # 13. 책 상태
-    state= models.CharField(null=False,default = '' ,max_length=100, verbose_name ="책 상태")
+    state= models.CharField(choices=BOOK_STATE, max_length=100, verbose_name ="책 상태")
 
 
     # 14. 카테고리
@@ -59,6 +71,7 @@ class bookPost(models.Model):
     # 17. profile
     profile=models.ForeignKey(Profile,null=False,default = '' ,on_delete=models.CASCADE,blank=True)
 
+    tags_list = models.CharField(max_length=100,blank=True)
 
     # 조회 할 때마다 업데이트
     def update_counter(self):
