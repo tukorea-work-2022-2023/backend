@@ -30,13 +30,14 @@ SECRET_KEY = my_settings.SECRET['secret']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.56.101','localhost','127.0.0.1']
+ALLOWED_HOSTS = ['192.168.56.101','localhost','127.0.0.1','192.168.163.168', '192.168.160.98']
+CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:3000' ,'http://localhost:8000']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    #"django.contrib.admin",
+    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -53,8 +54,22 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
-    #"book_search",
+    'django_filters',
+    'taggit_serializer',
+
 ]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ]  # django-filter 모듈이 프로젝트 전역에 적용됨에 주의
+}
+
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -164,3 +179,9 @@ CORS_ALLOW_HEADERS = (
     'x-requested-with',
 
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
