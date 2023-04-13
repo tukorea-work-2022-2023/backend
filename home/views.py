@@ -7,6 +7,8 @@ from rest_framework.authentication import BasicAuthentication,SessionAuthenticat
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 import json
+from rest_framework import filters
+
 
 
 
@@ -27,8 +29,8 @@ class bookPostViewSet(viewsets.ModelViewSet):
     authentication_classes = [BasicAuthentication,SessionAuthentication]
     permission_classes = [CustomReadOnly,IsAuthenticated]
 
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['user', 'like']
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
+    filterset_fields = ['user', 'like','tags']
 
 
 

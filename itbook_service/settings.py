@@ -30,7 +30,7 @@ SECRET_KEY = my_settings.SECRET['secret']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.56.101','localhost','127.0.0.1','192.168.163.168']
+ALLOWED_HOSTS = ['192.168.56.101','localhost','127.0.0.1','192.168.163.168', '192.168.160.98']
 CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:3000' ,'http://localhost:8000']
 
 

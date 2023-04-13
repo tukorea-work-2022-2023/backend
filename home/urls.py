@@ -16,5 +16,6 @@ router.register('bookPostComment',bookCommentViewSet,basename='bookPostComment')
 router.register('bookSearch',bookSearchViewSet,basename='bookSearch')
 
 urlpatterns=router.urls+[
-    path('like/<int:pk>/', like_post, name='like_post')
+    path('like/<int:pk>/', like_post, name='like_post'),
+
 ]

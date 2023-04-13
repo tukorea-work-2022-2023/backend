@@ -43,13 +43,14 @@ class bookPostSerializer(TaggitSerializer,serializers.ModelSerializer):
         model = bookPost
         fields = (
         'pk', 'profile', 'writer', 'publisher', 'title', 'content', 'image', 'created_at', 'sell_price', 'comment',
-        'tags', 'state', 'summary', 'state_image','tags_list')
+        'tags', 'state', 'summary', 'state_image','tags_list','like')
 
 
     def create(self, validated_data):
         tags_data = validated_data.pop('tags', [])
         instance = super().create(validated_data)
-        instance.tags.set(*tags_data)
+        for tag in tags_data:
+            instance.tags.add(tag)
         return instance
 
 
