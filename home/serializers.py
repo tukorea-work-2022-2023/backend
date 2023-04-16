@@ -33,6 +33,7 @@ class bookPostSerializer(TaggitSerializer,serializers.ModelSerializer):
     comment=bookCommentSerializer(many=True,read_only=True)
     tags = TagListSerializerField(required=False)
 
+
     tags_list = serializers.ListField(
         child=serializers.CharField(),
         read_only=True

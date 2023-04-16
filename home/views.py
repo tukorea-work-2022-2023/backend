@@ -8,15 +8,24 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 import json
 from rest_framework import filters
-
-
-
-
+from django.views.generic import ListView
+from django_filters.views import FilterView
+from rest_framework.response import Response
+from rest_framework import status
 
 from django_filters.rest_framework import DjangoFilterBackend
 from .permissions import CustomReadOnly
 from rest_framework.filters import SearchFilter
 
+
+import requests
+from io import BytesIO
+from PIL import Image
+import urllib.request
+import urllib.parse
+from bs4 import BeautifulSoup
+
+from book_search import barcode_book
 
 
 
@@ -29,8 +38,8 @@ class bookPostViewSet(viewsets.ModelViewSet):
     authentication_classes = [BasicAuthentication,SessionAuthentication]
     permission_classes = [CustomReadOnly,IsAuthenticated]
 
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
-    filterset_fields = ['user', 'like','tags']
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['user', 'like']
 
 
 
@@ -57,6 +66,13 @@ class bookPostViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user, profile=profile, tags_list=tags_list)
         instance = serializer.instance
         instance.tags.set(tags_list)
+
+
+
+
+
+
+
 
 
 # 장바구니 기능
@@ -107,4 +123,32 @@ class bookSearchViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter]
 
     search_fields=['title']
+
+
+
+# 바코드를 가지고 해당 서적 출력
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def barcode_book_info(request):
+    ItemId = request.query_params.get('ItemId')
+    book_result=barcode_book(ItemId)
+    print(book_result)
+
+
+    if "key" in book_result:
+        title=book_result['title']
+        author=book_result['author']
+        publisher=book_result['publisher']
+        #pub_date=book_result['pub_date']
+        description=book_result['description']
+        cover=book_result['cover']
+
+        print(title)
+        return Response({'title': title,'author':author,'publisher':publisher,'description':description,'cover':cover})
+
+    else:
+        return Response({'message': book_result})
+
+
+
 

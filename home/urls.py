@@ -17,5 +17,6 @@ router.register('bookSearch',bookSearchViewSet,basename='bookSearch')
 
 urlpatterns=router.urls+[
     path('like/<int:pk>/', like_post, name='like_post'),
+    path('barcode_bookInfo/',barcode_book_info,name='book_Info'),
 
 ]
