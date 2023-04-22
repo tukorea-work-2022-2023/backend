@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 def barcode_book(id):
     url = 'http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx'
     data = urllib.parse.urlencode({
-        'ttbkey': 'ttbkey',
+        'ttbkey': 'ttbekgml75842102001',
         'itemIdType': 'ISBN13',
         'ItemId':id #'9791170485131'# 플러터 스캔 기능으로 ISBN 받아옴.
     })
