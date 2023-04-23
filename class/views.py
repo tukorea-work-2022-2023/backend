@@ -32,16 +32,40 @@ def video_search_list(request):
     print(video_list)
     print(type(video_list))
 
+    title=[]
+    link=[]
+    view=[]
+    created=[]
+
     for i in range(10):
         if len(video_list[i])>0:
 
-            title=video_list[i]['ten_title']
-            link=book_result[i]['ten_link']
-            view=book_result[i]['ten_view']
-            created=book_result[i]['ten_created']
+            title_a=video_list[i]['ten_title']
+            link_a=video_list[i]['ten_link']
+            view_a=video_list[i]['ten_view']
+            created_a=video_list[i]['ten_created']
 
-            print(title)
-            return Response({'title': title,'link':link,'view':view,'created':created})
+            title.append(title_a)
+            link.append(link_a)
+            view.append(view_a)
+            created.append(created_a)
+
+            #print(title)
+            #return Response({'title': title,'link':link,'view':view,'created':created})
 
         else:
+
             return Response({'message': '동영상 리스트 조회에 오류가 있습니다.'})
+
+    data=[]
+    for i in range(10):
+        video_a={
+            'title':title[i],
+            'link': link[i],
+            'view': view[i],
+            'created': created[i]
+        }
+        data.append(video_a)
+
+    return Response(data)
+    #return Response({'title': title, 'link': link, 'view': view, 'created': created})

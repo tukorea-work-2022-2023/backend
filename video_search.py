@@ -134,14 +134,17 @@ def video_list_search(name):
 
 
     for i in range(10):
+
+        #딕셔너리 형태로 저장
         video_dict={
             'ten_title':max_ten_title[i],
             'ten_link':max_ten_link[i],
             'ten_view':max_ten_view[i],
             'ten_created':max_ten_created[i],
         }
-        video_list[i].append(video_dict)
-        print(video_list[i])
+        print(video_dict)
+        video_list.append(video_dict)
+        #print(video_list[i])
 
 
     return video_list
