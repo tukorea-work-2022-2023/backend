@@ -33,18 +33,18 @@ class bookPostSerializer(TaggitSerializer,serializers.ModelSerializer):
     comment=bookCommentSerializer(many=True,read_only=True)
     tags = TagListSerializerField(required=False)
 
-
-    tags_list = serializers.ListField(
-        child=serializers.CharField(),
-        read_only=True
-    )
+    #
+    # tags_list = serializers.ListField(
+    #     child=serializers.CharField(),
+    #     read_only=True
+    # )
 
 
     class Meta:
         model = bookPost
         fields = (
         'pk', 'profile', 'writer', 'publisher', 'title', 'content', 'image', 'created_at', 'sell_price', 'comment',
-        'tags', 'state', 'summary', 'state_image','tags_list','like')
+        'tags', 'state', 'summary', 'state_image')
 
 
     def create(self, validated_data):

@@ -29,7 +29,7 @@ def barcode_book(id):
             'title':result_item.find('title').text,
             'author':result_item.find('author').text,
             'publisher':result_item.find('publisher').text,
-            #'pub_date':result_item.find('pub_date').text,
+            #'pubdate':result_item.find('pubdate').text,
             'description':result_item.find('description').text,
             'cover':result_item.find('cover').text,
 

@@ -52,20 +52,20 @@ class bookPostViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         profile = Profile.objects.get(user=self.request.user)
-        #serializer.save(user=self.request.user, profile=profile)
+        serializer.save(user=self.request.user, profile=profile)
         # tags_str을 파싱하여 tags_list로 변환
-        tags = self.request.data.get('tags')
-
-        if tags is None:
-            tags_list = []
-        else:
-            try:
-                tags_list = json.loads(tags)
-            except ValueError:
-                tags_list = []
-        serializer.save(user=self.request.user, profile=profile, tags_list=tags_list)
-        instance = serializer.instance
-        instance.tags.set(tags_list)
+        # tags = self.request.data.get('tags')
+        #
+        # if tags is None:
+        #     tags_list = []
+        # else:
+        #     try:
+        #         tags_list = json.loads(tags)
+        #     except ValueError:
+        #         tags_list = []
+        # serializer.save(user=self.request.user, profile=profile, tags_list=tags_list)
+        # instance = serializer.instance
+        # instance.tags.set(tags_list)
 
 
 
@@ -139,7 +139,7 @@ def barcode_book_info(request):
         title=book_result['title']
         author=book_result['author']
         publisher=book_result['publisher']
-        #pub_date=book_result['pub_date']
+        #pubdate=book_result['pubdate']
         description=book_result['description']
         cover=book_result['cover']
 

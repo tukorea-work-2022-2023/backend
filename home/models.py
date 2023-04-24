@@ -71,7 +71,7 @@ class bookPost(models.Model):
     # 17. profile
     profile=models.ForeignKey(Profile,null=False,default = '' ,on_delete=models.CASCADE,blank=True)
 
-    tags_list = models.CharField(max_length=100,blank=True)
+    #tags_list = models.CharField(max_length=100,blank=True)
 
     # 조회 할 때마다 업데이트
     def update_counter(self):
