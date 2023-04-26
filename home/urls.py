@@ -18,5 +18,6 @@ router.register('bookSearch',bookSearchViewSet,basename='bookSearch')
 urlpatterns=router.urls+[
     path('like/<int:pk>/', like_post, name='like_post'),
     path('barcode_bookInfo/',barcode_book_info,name='book_Info'),
+    path('bookPost/tagged/<str:tag_name>/', BookListByTag.as_view(), name='book_list_by_tag')
 
 ]

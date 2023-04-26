@@ -10,6 +10,7 @@ import json
 from rest_framework import filters
 from django.views.generic import ListView
 from django_filters.views import FilterView
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -68,8 +69,11 @@ class bookPostViewSet(viewsets.ModelViewSet):
         # instance.tags.set(tags_list)
 
 
-
-
+class BookListByTag(APIView):
+    def get(self, request, tag_name):
+        books =bookPost.objects.filter(tags__name__in=[tag_name])
+        serializer = bookPostSerializer(books, many=True)
+        return Response(serializer.data)
 
 
 
@@ -86,7 +90,7 @@ def like_post(request, pk):
         return Response({'status': status.HTTP_403_FORBIDDEN,
                          'message': '본인의 게시글은 찜을 할 수 없습니다.'})
 
-    elif request.user in post.bucket.all():
+    elif request.user in post.like.all():
         post.like.remove(request.user)
     else:
         post.like.add(request.user)
