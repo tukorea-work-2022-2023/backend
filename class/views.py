@@ -22,50 +22,98 @@ from PIL import Image
 import urllib.request
 import urllib.parse
 from bs4 import BeautifulSoup
+import pymysql
+
+
+
+
+# database 연결
+conn = pymysql.connect(host='127.0.0.1', user='root', password='dahee1228!', db='crawling_video', charset='utf8')
+cursor = conn.cursor()
 
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def video_search_list(request):
     VideoName = request.query_params.get('VideoName')
-    video_list=video_list_search(VideoName)
-    print(video_list)
-    print(type(video_list))
 
-    title=[]
-    link=[]
-    view=[]
-    created=[]
+    if 'C언어'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.CLanguage_videos")
+        data = cursor.fetchall()
+    elif '파이썬'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.python_videos")
+        data = cursor.fetchall()
+    elif '자바'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.java_videos")
+        data = cursor.fetchall()
+    elif 'SQL'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.sql_videos")
+        data = cursor.fetchall()
+    elif 'HTML+CSS+자바스크립트'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.html_videos")
+        data = cursor.fetchall()
+    elif '코틀린'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.cotlin_videos")
+        data = cursor.fetchall()
+    elif 'IT 트렌드'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.it_trend_videos")
+        data = cursor.fetchall()
+    elif '개발자 면접'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.interview_videos")
+        data = cursor.fetchall()
+    elif '백엔드'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.backend_videos")
+        data = cursor.fetchall()
+    elif '프론트엔드'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.frontend_videos")
+        data = cursor.fetchall()
+    elif '앱개발'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.app_videos")
+        data = cursor.fetchall()
+    elif '정보보안'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.security_videos")
+        data = cursor.fetchall()
+    elif 'Spring Boot'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.springboot_videos")
+        data = cursor.fetchall()
+    elif '스프링 프레임워크'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.springframework_videos")
+        data = cursor.fetchall()
+    elif 'Python Django'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.django_videos")
+        data = cursor.fetchall()
+    elif 'Python Flask'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.flask_videos")
+        data = cursor.fetchall()
+    elif 'Node.js'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.nodejs_videos")
+        data = cursor.fetchall()
+    elif 'React.js'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.react_videos")
+        data = cursor.fetchall()
+    elif 'Vue.js'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.vue_videos")
+        data = cursor.fetchall()
+    elif 'Angular'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.Angular_videos")
+        data = cursor.fetchall()
+    elif 'jQuery'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.jQuery_videos")
+        data = cursor.fetchall()
+    elif 'React Native'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.reactnative_videos")
+        data = cursor.fetchall()
+    elif '플러터'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.flutter_videos")
+        data = cursor.fetchall()
+    elif '모의해킹'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.hacker_videos")
+        data = cursor.fetchall()
+    elif '보안관제'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.cert_videos")
+        data = cursor.fetchall()
+    elif 'CS지식'==VideoName:
+        cursor.execute("SELECT * FROM crawling_video.cs_videos")
+        data = cursor.fetchall()
 
-    for i in range(10):
-        if len(video_list[i])>0:
-
-            title_a=video_list[i]['ten_title']
-            link_a=video_list[i]['ten_link']
-            view_a=video_list[i]['ten_view']
-            created_a=video_list[i]['ten_created']
-
-            title.append(title_a)
-            link.append(link_a)
-            view.append(view_a)
-            created.append(created_a)
-
-            #print(title)
-            #return Response({'title': title,'link':link,'view':view,'created':created})
-
-        else:
-
-            return Response({'message': '동영상 리스트 조회에 오류가 있습니다.'})
-
-    data=[]
-    for i in range(10):
-        video_a={
-            'title':title[i],
-            'link': link[i],
-            'view': view[i],
-            'created': created[i]
-        }
-        data.append(video_a)
-
-    return Response(data)
-    #return Response({'title': title, 'link': link, 'view': view, 'created': created})
+    return Response({'message': data})

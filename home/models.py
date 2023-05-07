@@ -52,9 +52,9 @@ class bookPost(models.Model):
     # 12. 책 요약
     summary = models.TextField(null=False,default = '' ,verbose_name="책 요약")
 
-
+#choices=BOOK_STATE,
     # 13. 책 상태
-    state= models.CharField(choices=BOOK_STATE, max_length=100, verbose_name ="책 상태")
+    state= models.CharField( max_length=100, verbose_name ="책 상태")
 
 
     # 14. 카테고리
