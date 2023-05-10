@@ -36,7 +36,7 @@ cursor = conn.cursor()
 @permission_classes([IsAuthenticated])
 def video_search_list(request):
     VideoName = request.query_params.get('VideoName')
-
+    data=[]
     if 'C언어'==VideoName:
         cursor.execute("SELECT * FROM crawling_video.CLanguage_videos")
         data = cursor.fetchall()
