@@ -5,6 +5,6 @@ from .views import *
 
 urlpatterns = [
 
-    path('video_list/',video_search_list,name='video_search_list'),
+    path('video_list',video_search_list,name='video_search_list'),
 
 ]

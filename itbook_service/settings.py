@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "corsheaders",
     'django_filters',
     'taggit_serializer',
+    'channels',
 
 ]
 
@@ -101,7 +102,13 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "itbook_service.wsgi.application"
+ASGI_APPLICATION = 'itbook_service.asgi.application'
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases

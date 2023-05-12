@@ -29,3 +29,4 @@ sqlparse==0.4.3
 urllib3==1.26.14
 zipp==3.11.0
 django-taggit-autosuggest==0.4.1
+channels==4.0.0

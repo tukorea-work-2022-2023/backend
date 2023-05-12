@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from home import urls
 
 
+
 urlpatterns = [
 
     #관라자 페이지
@@ -33,3 +34,5 @@ urlpatterns = [
 
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
