@@ -3,7 +3,7 @@ from .models import *
 from .serializers import bookCommentSerializer,bookPostSerializer,bookPostCreateSerializer,bookCommentCreateSerializer
 from rest_framework import viewsets
 from rest_framework.decorators import api_view,permission_classes
-from rest_framework.authentication import BasicAuthentication,SessionAuthentication
+from rest_framework.authentication import BasicAuthentication,SessionAuthentication,TokenAuthentication
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 import json
@@ -36,7 +36,8 @@ class bookPostViewSet(viewsets.ModelViewSet):
 
 
     queryset = bookPost.objects.all()
-    authentication_classes = [BasicAuthentication,SessionAuthentication]
+    authentication_classes = [TokenAuthentication]
+    #authentication_classes = [BasicAuthentication,SessionAuthentication]
     permission_classes = [CustomReadOnly,IsAuthenticated]
 
     filter_backends = [DjangoFilterBackend]
@@ -105,7 +106,8 @@ def like_post(request, pk):
 class bookCommentViewSet(viewsets.ModelViewSet):
     """댓글 등록/조회/수정/삭제"""
     queryset = bookComment.objects.all()
-    authentication_classes = [BasicAuthentication, SessionAuthentication]
+    authentication_classes = [TokenAuthentication]
+    #authentication_classes = [BasicAuthentication, SessionAuthentication]
     permission_classes = [CustomReadOnly,IsAuthenticated]
 
     def get_serializer_class(self):

@@ -3,7 +3,7 @@ from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
 from home import urls
-
+from chat import routing
 
 
 urlpatterns = [
@@ -31,6 +31,8 @@ urlpatterns = [
 
     #회원가입/로그인 탭 페이지
     path("account/",include('account.urls')),
+
+    *routing.websocket_urlpatterns,
 
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

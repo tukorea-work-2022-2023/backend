@@ -21,8 +21,8 @@ class RoomMessagesView(APIView):
             messages = list(Messages.objects.filter(room__id=room_id).values(
                 'id', 'room', 'user', 'content', 'created_at'))
         else:
-            messages = list(Messages.objects.filter(Q(room__name=f'{user.user_uid}-{user_id}') |
-                            Q(room__name=f'{user_id}-{user.user_uid}')).values('id', 'room', 'user', 'content', 'created_at'))
+            messages = list(Messages.objects.filter(Q(room__name=f'{user.id}-{user_id}') |
+                            Q(room__name=f'{user_id}-{user.id}')).values('id', 'room', 'user', 'content', 'created_at'))
 
         response_content = {
             'status': True,
@@ -45,8 +45,8 @@ class ChatRoomListView(APIView):
 
         room_ids = list(ChatRoomParticipants.objects.filter(
             user=user).values_list('room__id', flat=True))
-        chatrooms = list(ChatRoomParticipants.objects.exclude(user__user_uid=user.user_uid).filter(
-            room__id__in=room_ids).values('user__username', 'user__user_uid', 'room__id', 'room__name','room__post', 'room__last_message', 'room__last_sent_user'))
+        chatrooms = list(ChatRoomParticipants.objects.exclude(user__id=user.id).filter(
+            room__id__in=room_ids).values('user__username', 'user__id', 'room__id', 'room__name','room__post', 'room__last_message', 'room__last_sent_user'))
 
         response_content = {
             'status': True,
