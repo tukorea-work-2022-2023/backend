@@ -7,16 +7,6 @@ from taggit.managers import TaggableManager #태그 기능을 함
 class bookPost(models.Model):
 
 
-    BOOK_STATE = {
-
-        ('very good', '매우 좋음'),
-        ('good', '좋음'),
-        ('soso', '보통'),
-        ('not bad', '나쁘지 않음'),
-        ('bad', '나쁨'),
-
-    }
-
     # 1. 책 제목
     title=models.CharField(max_length=128, verbose_name ="책 제목")
 
@@ -70,6 +60,11 @@ class bookPost(models.Model):
 
     # 17. profile
     profile=models.ForeignKey(Profile,null=False,default = '' ,on_delete=models.CASCADE,blank=True)
+
+
+    # 18. 책 대여상태
+    rent_state = models.CharField(null=False,default = '대여 가능' ,max_length=100, verbose_name="책 대여상태")
+
 
     #tags_list = models.CharField(max_length=100,blank=True)
 
