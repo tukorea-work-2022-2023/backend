@@ -25,6 +25,8 @@ from PIL import Image
 import urllib.request
 import urllib.parse
 from bs4 import BeautifulSoup
+import datetime
+from django.utils import timezone
 
 from book_search import barcode_book
 
@@ -69,6 +71,35 @@ class majorPostViewSet(viewsets.ModelViewSet):
         # instance = serializer.instance
         # instance.tags.set(tags_list)
 
+    # 조회수 기능
+    def retrieve(self, request, pk=None):
+
+        instance = get_object_or_404(self.get_queryset(), pk=pk)
+        # 당일날 밤 12시에 쿠키 초기화
+        tomorrow = datetime.datetime.replace(timezone.datetime.now(), hour=23, minute=59, second=0)
+        expires = datetime.datetime.strftime(tomorrow, "%a, %d-%b-%Y %H:%M:%S GMT")
+
+        # response를 미리 받고 쿠키를 만들어야 한다
+        serializer = self.get_serializer(instance)
+        response = Response(serializer.data, status=status.HTTP_200_OK)
+        # 쿠키 읽기 & 생성
+        if request.COOKIES.get('hit') is not None:  # 쿠키에 hit 값이 이미 있을 경우
+            cookies = request.COOKIES.get('hit')
+            cookies_list = cookies.split('|')  # '|'는 다르게 설정 가능 ex) '.'
+            if str(pk) not in cookies_list:
+                response.set_cookie('hit', cookies + f'|{pk}', expires=expires)  # 쿠키 생성
+                instance.hits += 1
+                instance.save()
+
+        else:  # 쿠키에 hit 값이 없을 경우(즉 현재 보는 게시글이 첫 게시글임)
+            response.set_cookie('hit', pk, expires=expires)
+            instance.hits += 1
+            instance.save()
+
+        # hits가 추가되면 해당 instance를 serializer에 표시
+        serializer = self.get_serializer(instance)
+
+        return response
 
 class MajorListByTag(APIView):
     def get(self, request, tag_name):
@@ -118,6 +149,8 @@ class majorCommentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         profile = Profile.objects.get(user=self.request.user)
         serializer.save(user=self.request.user, profile=profile)
+
+
 
 
 

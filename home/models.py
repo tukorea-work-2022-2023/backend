@@ -69,6 +69,7 @@ class bookPost(models.Model):
     #tags_list = models.CharField(max_length=100,blank=True)
 
     # 조회 할 때마다 업데이트
+    @property
     def update_counter(self):
         self.hits = self.hits + 1
         self.save()
