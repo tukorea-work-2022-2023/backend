@@ -24,13 +24,14 @@ def barcode_book(id):
     # 에러가 아닌 경우.
     if result is None:
         result_item = soup.find('item')
-
+        print(result_item)
         book_result={
             'title':result_item.find('title').text,
             'author':result_item.find('author').text,
             'publisher':result_item.find('publisher').text,
-            #'pubdate':result_item.find('pubdate').text,
+            'pubdate':result_item.find('pubDate').text,
             'description':result_item.find('description').text,
+            'price': result_item.find('priceStandard').text,
             'cover':result_item.find('cover').text,
 
         }
