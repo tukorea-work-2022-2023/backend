@@ -52,7 +52,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         user.set_password(validated_data['password'])
         user.save()
-        token= Token.objects.create(user=user)
+        token = Token.objects.create(user=user)
         return user
 
 
@@ -77,6 +77,7 @@ class LoginSerializer(serializers.Serializer):
 # ModelSerializer를 사용할 필요가 없다.
 class SigninSerializer(serializers.Serializer):
     """"로그인 Serializer"""
+
     # 비밀번호에 write_only 옵션
     # 클라이언트 -> 서버 역직렬화 가능, 서버 -> 클라이언트 직렬화 불가능
     username = serializers.CharField(required=True)
@@ -92,6 +93,7 @@ class SigninSerializer(serializers.Serializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     """프로필 Serializer"""
+    interest = serializers.ListField(child=serializers.CharField(), write_only=True)
     class Meta:
         model = Profile
-        fields = ('nickname', 'studentnumber', 'major', 'interest','image')
+        fields = ('user','nickname', 'studentnumber', 'major', 'interest', 'image')
