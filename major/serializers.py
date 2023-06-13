@@ -61,7 +61,7 @@ class majorPostSerializer(TaggitSerializer,serializers.ModelSerializer):
 class majorPostCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = majorPost
-        fields = ('category','title', 'writer','publisher','content','image','sell_price','summary','state_image','tags','state')
+        fields = ('category','title', 'writer','publisher','content','image','sell_price','summary','state_image','tags','state','pub_date')
 
 
 

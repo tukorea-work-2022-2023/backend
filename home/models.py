@@ -65,6 +65,10 @@ class bookPost(models.Model):
     # 18. 책 대여상태
     rent_state = models.CharField(null=False,default = '대여 가능' ,max_length=100, verbose_name="책 대여상태")
 
+    # 19. 출판일
+    pub_date = models.CharField(null=False, default='', max_length=100, verbose_name="출판일")
+
+
 
     #tags_list = models.CharField(max_length=100,blank=True)
 
