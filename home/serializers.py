@@ -44,7 +44,7 @@ class bookPostSerializer(TaggitSerializer,serializers.ModelSerializer):
         model = bookPost
         fields = (
         'pk', 'profile', 'writer', 'publisher', 'title', 'content', 'image', 'created_at', 'sell_price', 'comment',
-        'tags', 'state', 'summary', 'state_image','rent_state','pub_date')
+        'tags', 'state', 'summary', 'state_image','rent_state','pub_date','hits')
 
 
     def create(self, validated_data):
