@@ -53,7 +53,7 @@ class majorPost(models.Model):
 
 
     # 16. 책 상태 사진
-    state_image = models.TextField(null=False,verbose_name="책 상태 사진")
+    state_image = models.FileField(upload_to='state_images/',verbose_name="책 상태 사진")
 
     # 17. profile
     profile=models.ForeignKey(Profile,null=False,default = '' ,on_delete=models.CASCADE,blank=True)

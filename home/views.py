@@ -29,6 +29,7 @@ import urllib.parse
 from bs4 import BeautifulSoup
 import datetime
 from django.utils import timezone
+from datetime import timedelta
 
 from book_search import barcode_book
 
@@ -208,4 +209,19 @@ class MyPageView(APIView):
 #         return Response(serialized_data, status=status.HTTP_200_OK)
 
 
+# 대여 일자에 따른 대여 일수
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def create_rental(request,pk):
+    book = bookPost.objects.get(pk=pk)
+    rental_days = request.data.get('rental_days')
+    start_date = timezone.now().date()
+    print(start_date)
+    end_date = start_date + timedelta(days=rental_days)
+    print(end_date)
+    book.rent_start_date = start_date
+    book.rent_end_date = end_date
 
+    book.save()
+
+    return Response({'message': 'Rental created successfully.'})
