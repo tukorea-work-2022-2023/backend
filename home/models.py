@@ -2,7 +2,7 @@ from django.db import models
 from django.urls import reverse
 from account.models import User,Profile
 from taggit.managers import TaggableManager #태그 기능을 함
-
+from django.utils import timezone
 
 class bookPost(models.Model):
 
@@ -44,7 +44,7 @@ class bookPost(models.Model):
 
 #choices=BOOK_STATE,
     # 13. 책 상태
-    state= models.CharField( max_length=100, verbose_name ="책 상태")
+    state= models.CharField(max_length=100, verbose_name ="책 상태")
 
 
     # 14. 카테고리
@@ -56,7 +56,7 @@ class bookPost(models.Model):
 
 
     # 16. 책 상태 사진
-    state_image = models.TextField(null=False,verbose_name="책 상태 사진")
+    state_image = models.FileField(upload_to='state_images/',verbose_name="책 상태 사진")
 
     # 17. profile
     profile=models.ForeignKey(Profile,null=False,default = '' ,on_delete=models.CASCADE,blank=True)
@@ -67,6 +67,12 @@ class bookPost(models.Model):
 
     # 19. 출판일
     pub_date = models.CharField(null=False, default='', max_length=100, verbose_name="출판일")
+
+    # 20. 대여 시작 일자
+    rent_start_date = models.DateField(null=True,verbose_name="대여 시작 일자")
+
+    # 21. 대여 끝난 일자
+    rent_end_date = models.DateField(null=True,verbose_name="대여 끝난 일자")
 
 
 
