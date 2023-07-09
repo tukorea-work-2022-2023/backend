@@ -1,11 +1,14 @@
 from django.urls import path
-from account.views import RegisterView
-from account.views import SigninView
-from account.views import ProfileView
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+from . import views
+from .views import RegisterView, ProfileView
 
 urlpatterns = [
-    #회원가입
-    path('signup/',RegisterView.as_view()),
-    path('signin/',SigninView.as_view()),
-    path('profile/<int:pk>',ProfileView.as_view()),
+    path('login/', views.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('register/', RegisterView.as_view(), name="sign_up"),
+    path('profile/',ProfileView.as_view()),
 ]
