@@ -5,7 +5,7 @@ from django.core import serializers
 from rest_framework import serializers
 from account.models import UserData
 from account.serializers import ProfileSerializer
-from .models import bookPost, bookComment, Study
+from .models import bookPost,bookComment
 from taggit_serializer.serializers import TaggitSerializer,TagListSerializerField
 from collections import OrderedDict
 
