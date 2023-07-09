@@ -1,6 +1,6 @@
 from django.db import models
 from django.urls import reverse
-from account.models import User,Profile
+from account.models import UserData,Profile
 from taggit.managers import TaggableManager #태그 기능을 함
 
 
@@ -19,7 +19,7 @@ class majorPost(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name ="생성 일자")
 
     # 6. 작성자
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, related_name='major_posts',
+    user = models.ForeignKey(UserData, null=True, blank=True, on_delete=models.CASCADE, related_name='major_posts',
                          verbose_name ="작성자")
 
     # 7. 책 설명
@@ -49,7 +49,7 @@ class majorPost(models.Model):
     category=models.CharField( max_length=100, verbose_name ="카테고리")
 
     # 15. 찜
-    like = models.ManyToManyField(User)
+    like = models.ManyToManyField(UserData)
 
 
     # 16. 책 상태 사진
@@ -79,7 +79,7 @@ class majorPost(models.Model):
 # 댓글 달기
 class majorComment(models.Model):
     major_post=models.ForeignKey(majorPost,related_name='comments',null=False,blank=False,on_delete=models.CASCADE)
-    user=models.ForeignKey(User,null=False,blank=False,on_delete=models.CASCADE)
+    user=models.ForeignKey(UserData,null=False,blank=False,on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, null=False,default = '' ,on_delete=models.CASCADE)
     created_at = models.DateField(auto_now_add=True, null=False, blank=False)
     comment = models.TextField()
@@ -91,7 +91,7 @@ class majorComment(models.Model):
 # 스터디
 class Study(models.Model):
     major_post=models.ForeignKey(majorPost,related_name='study',null=False,blank=False,on_delete=models.CASCADE)
-    user=models.ForeignKey(User,null=False,blank=False,on_delete=models.CASCADE,related_name='major_study')
+    user=models.ForeignKey(UserData,null=False,blank=False,on_delete=models.CASCADE,related_name='major_study')
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE,related_name='major_profile')
     created_at = models.DateField(auto_now_add=True, null=False, blank=False)
     headcount = models.PositiveIntegerField(default=0, verbose_name ="스터디 인원")

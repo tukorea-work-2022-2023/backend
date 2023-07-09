@@ -3,9 +3,9 @@ import json
 from rest_framework.exceptions import ValidationError
 from django.core import serializers
 from rest_framework import serializers
-from account.models import User
+from account.models import UserData
 from account.serializers import ProfileSerializer
-from .models import bookPost,bookComment
+from .models import bookPost, bookComment, Study
 from taggit_serializer.serializers import TaggitSerializer,TagListSerializerField
 from collections import OrderedDict
 
@@ -64,4 +64,17 @@ class bookPostCreateSerializer(serializers.ModelSerializer):
         fields = ('title', 'writer','publisher','content','image','sell_price','summary','state_image','tags','state','pub_date')
 
 
+
+# 찜
+class LikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = bookPost
+        fields = ['user', 'title', 'writer','publisher','content','image','sell_price','summary','state_image','tags','state','pub_date','like']
+
+
+class studyPostSerializer(TaggitSerializer,serializers.ModelSerializer):
+    profile=ProfileSerializer(read_only=True)
+    class Meta:
+        model = Study
+        fields = ('book_post', 'user', 'profile', 'created_at', 'headcount', 'study_period')
 
