@@ -10,5 +10,5 @@ urlpatterns = [
     path('login/', views.CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('register/', RegisterView.as_view(), name="sign_up"),
-    path('profile/',ProfileView.as_view()),
+    path('profile/<int:pk>',ProfileView.as_view()),
 ]

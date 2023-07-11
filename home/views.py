@@ -1,9 +1,11 @@
 #from django.shortcuts import render
 from .models import *
-from .serializers import bookCommentSerializer, bookPostSerializer, bookPostCreateSerializer,bookCommentCreateSerializer, LikeSerializer
+from .serializers import bookCommentSerializer, bookPostSerializer, bookPostCreateSerializer, \
+    bookCommentCreateSerializer,StudySerializer, StudyCreateSerializer
 from rest_framework import viewsets
 from rest_framework.decorators import api_view,permission_classes
-from rest_framework.authentication import BasicAuthentication,SessionAuthentication,TokenAuthentication
+from rest_framework.authentication import TokenAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 import json
@@ -38,7 +40,7 @@ class bookPostViewSet(viewsets.ModelViewSet):
 
 
     queryset = bookPost.objects.all()
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
     #authentication_classes = [BasicAuthentication,SessionAuthentication]
     permission_classes = [CustomReadOnly,IsAuthenticated]
 
@@ -108,42 +110,29 @@ class BookListByTag(APIView):
         serializer = bookPostSerializer(books, many=True)
         return Response(serializer.data)
 
-#   스터디 게시물
-class StudyPostViewSet(viewsets.ModelViewSet):
+# 장바구니 기능
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])  # 회원가입한 User라면 모두 진입 가능
+def like_post(request, pk):
+    """찜 기능: GET"""
+    post = get_object_or_404(bookPost, pk=pk)
 
+    if request.user == post.user:
+        return Response({'status': status.HTTP_403_FORBIDDEN,
+                         'message': '본인의 게시글은 찜을 할 수 없습니다.'})
 
-    queryset = Study.objects.all()
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [CustomReadOnly,IsAuthenticated]
-
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['user', 'like']
-
-
-
-    def get_serializer_class(self):
-        if self.action == 'list' or 'retrieve':  # 전체 목록 또는 1개 조회
-
-            return bookPostSerializer
-
-        return bookPostCreateSerializer
-
-    def perform_create(self, serializer):
-        profile = Profile.objects.get(user=self.request.user)
-        serializer.save(user=self.request.user, profile=profile)
-
-
-
-
-
-
+    elif request.user in post.like.all():
+        post.like.remove(request.user)
+    else:
+        post.like.add(request.user)
+    return Response({'status': 'ok'})
 
 
 # comment 보여주기, 수정하기, 삭제하기 모두 가능
 class bookCommentViewSet(viewsets.ModelViewSet):
     """댓글 등록/조회/수정/삭제"""
     queryset = bookComment.objects.all()
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
     #authentication_classes = [BasicAuthentication, SessionAuthentication]
     permission_classes = [CustomReadOnly,IsAuthenticated]
 
@@ -195,7 +184,7 @@ def barcode_book_info(request):
 # - 마이페이지 -
 # 내가 등록한 게시물
 class MyPageView(APIView):
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
 
     def get(self, request):
         user = request.user.id
@@ -207,15 +196,16 @@ class MyPageView(APIView):
 
 
 # 내가 찜한 게시물
-class MyLikeView(APIView):
-    authentication_classes = [TokenAuthentication]
+# class MyLikeView(APIView):
+#     authentication_classes = [JWTAuthentication]
+#
+#     def get(self, request):
+#         user = request.user.id
+#         likes = like_post.objects.filter(user_id=user).order_by("-id")
+#
+#         serialized_data = bookPostSerializer(likes, many=True).data
+#
+#         return Response(serialized_data, status=status.HTTP_200_OK)
 
-    def get(self, request):
-        user = request.user.id
-        likes = bookPost.objects.filter(user_id=user).order_by("-id")
-
-        serialized_data = LikeSerializer(likes, many=True).data
-
-        return Response(serialized_data, status=status.HTTP_200_OK)
 
 

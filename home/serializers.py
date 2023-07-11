@@ -56,8 +56,6 @@ class bookPostSerializer(TaggitSerializer,serializers.ModelSerializer):
 
 
 
-
-
 class bookPostCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = bookPost
@@ -65,16 +63,4 @@ class bookPostCreateSerializer(serializers.ModelSerializer):
 
 
 
-# 찜
-class LikeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = bookPost
-        fields = ['user', 'title', 'writer','publisher','content','image','sell_price','summary','state_image','tags','state','pub_date','like']
-
-
-class studyPostSerializer(TaggitSerializer,serializers.ModelSerializer):
-    profile=ProfileSerializer(read_only=True)
-    class Meta:
-        model = Study
-        fields = ('book_post', 'user', 'profile', 'created_at', 'headcount', 'study_period')
 
