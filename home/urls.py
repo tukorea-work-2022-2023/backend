@@ -23,5 +23,6 @@ urlpatterns=router.urls+[
     path('bookPost/tagged/<str:tag_name>/', BookListByTag.as_view(), name='book_list_by_tag'),
     path('mypage/',MyPageView.as_view(),name='mypage'),
     #path('mylike/',MyLikeView.as_view(),name='mylike'),
+    path('create_rental/<int:pk>/rent/', create_rental, name='create_rental'),
 
 ]
