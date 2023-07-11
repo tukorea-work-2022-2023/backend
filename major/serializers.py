@@ -3,7 +3,7 @@ import json
 from rest_framework.exceptions import ValidationError
 from django.core import serializers
 from rest_framework import serializers
-from account.models import User
+from account.models import UserData
 from account.serializers import ProfileSerializer
 from .models import majorPost,majorComment
 from taggit_serializer.serializers import TaggitSerializer,TagListSerializerField

@@ -1,9 +1,11 @@
 #from django.shortcuts import render
 from .models import *
-from .serializers import bookCommentSerializer,bookPostSerializer,bookPostCreateSerializer,bookCommentCreateSerializer
+from .serializers import bookCommentSerializer, bookPostSerializer, bookPostCreateSerializer, \
+    bookCommentCreateSerializer,StudySerializer, StudyCreateSerializer
 from rest_framework import viewsets
 from rest_framework.decorators import api_view,permission_classes
-from rest_framework.authentication import BasicAuthentication,SessionAuthentication,TokenAuthentication
+from rest_framework.authentication import TokenAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 import json
@@ -38,7 +40,7 @@ class bookPostViewSet(viewsets.ModelViewSet):
 
 
     queryset = bookPost.objects.all()
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
     #authentication_classes = [BasicAuthentication,SessionAuthentication]
     permission_classes = [CustomReadOnly,IsAuthenticated]
 
@@ -108,10 +110,6 @@ class BookListByTag(APIView):
         serializer = bookPostSerializer(books, many=True)
         return Response(serializer.data)
 
-
-
-
-
 # 장바구니 기능
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])  # 회원가입한 User라면 모두 진입 가능
@@ -130,15 +128,11 @@ def like_post(request, pk):
     return Response({'status': 'ok'})
 
 
-
-
-
-
 # comment 보여주기, 수정하기, 삭제하기 모두 가능
 class bookCommentViewSet(viewsets.ModelViewSet):
     """댓글 등록/조회/수정/삭제"""
     queryset = bookComment.objects.all()
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
     #authentication_classes = [BasicAuthentication, SessionAuthentication]
     permission_classes = [CustomReadOnly,IsAuthenticated]
 
@@ -187,6 +181,31 @@ def barcode_book_info(request):
     else:
         return Response({'message': book_result})
 
+# - 마이페이지 -
+# 내가 등록한 게시물
+class MyPageView(APIView):
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        user = request.user.id
+        posts = bookPost.objects.filter(user_id=user).order_by("-id")
+        serialized_data = bookPostSerializer(posts, many=True).data
+
+        return Response(serialized_data, status=status.HTTP_200_OK)
+
+
+
+# 내가 찜한 게시물
+# class MyLikeView(APIView):
+#     authentication_classes = [JWTAuthentication]
+#
+#     def get(self, request):
+#         user = request.user.id
+#         likes = like_post.objects.filter(user_id=user).order_by("-id")
+#
+#         serialized_data = bookPostSerializer(likes, many=True).data
+#
+#         return Response(serialized_data, status=status.HTTP_200_OK)
 
 
 

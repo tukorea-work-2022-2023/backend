@@ -1,5 +1,5 @@
 import pymysql
-conn = pymysql.connect(host='127.0.0.1', user='root', password='dahee1228!', db='crawling_video', charset='utf8')
+conn = pymysql.connect(host='127.0.0.1', user='root', password='1234!', db='crawling_video', charset='utf8')
 cursor = conn.cursor()
 
 def crawling_video_db(keyword,video_list):
