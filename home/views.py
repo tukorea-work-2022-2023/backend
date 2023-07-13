@@ -1,7 +1,6 @@
 #from django.shortcuts import render
 from .models import *
-from .serializers import bookCommentSerializer, bookPostSerializer, bookPostCreateSerializer, \
-    bookCommentCreateSerializer,StudySerializer, StudyCreateSerializer
+from .serializers import bookCommentSerializer, bookPostSerializer, bookPostCreateSerializer
 from .serializers import bookCommentSerializer,bookPostSerializer,bookPostCreateSerializer,bookCommentCreateSerializer
 from rest_framework import viewsets
 from rest_framework.decorators import api_view,permission_classes

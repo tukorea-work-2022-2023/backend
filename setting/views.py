@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from home.models import bookPost
-from account.models import User,Profile
+from account.models import UserData,Profile
 from home.serializers import bookPostSerializer
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.authentication import BasicAuthentication,SessionAuthentication
