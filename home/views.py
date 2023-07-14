@@ -3,7 +3,7 @@ from .models import *
 from .serializers import bookCommentSerializer, bookPostSerializer, bookPostCreateSerializer
 from .serializers import bookCommentSerializer,bookPostSerializer,bookPostCreateSerializer,bookCommentCreateSerializer
 from rest_framework import viewsets
-from rest_framework.decorators import api_view,permission_classes
+from rest_framework.decorators import api_view,permission_classes,authentication_classes
 from rest_framework.authentication import TokenAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import get_object_or_404
@@ -113,10 +113,12 @@ class BookListByTag(APIView):
 
 # 장바구니 기능
 @api_view(['GET'])
+@authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])  # 회원가입한 User라면 모두 진입 가능
 def like_post(request, pk):
     """찜 기능: GET"""
     post = get_object_or_404(bookPost, pk=pk)
+
 
     if request.user == post.user:
         return Response({'status': status.HTTP_403_FORBIDDEN,
@@ -161,6 +163,7 @@ class bookSearchViewSet(viewsets.ModelViewSet):
 
 # 바코드를 가지고 해당 서적 출력
 @api_view(['GET'])
+@authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def barcode_book_info(request):
     ItemId = request.query_params.get('ItemId')
@@ -211,6 +214,7 @@ class MyPageView(APIView):
 
 # 대여 일자에 따른 대여 일수
 @api_view(["POST"])
+@authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def create_rental(request,pk):
     book = bookPost.objects.get(pk=pk)
@@ -219,6 +223,7 @@ def create_rental(request,pk):
     print(start_date)
     end_date = start_date + timedelta(days=rental_days)
     print(end_date)
+    book.rent_state="대여중"
     book.rent_start_date = start_date
     book.rent_end_date = end_date
 

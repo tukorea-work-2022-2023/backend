@@ -1,10 +1,11 @@
 #from django.shortcuts import render
 
 from rest_framework import viewsets
-from rest_framework.decorators import api_view,permission_classes
+from rest_framework.decorators import api_view,permission_classes,authentication_classes
 from rest_framework.authentication import BasicAuthentication,SessionAuthentication
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 import json
 from rest_framework import filters
 from django.views.generic import ListView
@@ -33,6 +34,7 @@ cursor = conn.cursor()
 
 
 @api_view(['GET'])
+@authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def video_search_list(request):
     VideoName = request.query_params.get('VideoName')

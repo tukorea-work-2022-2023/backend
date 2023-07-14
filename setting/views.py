@@ -2,8 +2,9 @@ from django.shortcuts import render
 from home.models import bookPost
 from account.models import UserData,Profile
 from home.serializers import bookPostSerializer
-from rest_framework.decorators import api_view,permission_classes
+from rest_framework.decorators import api_view,permission_classes,authentication_classes
 from rest_framework.authentication import BasicAuthentication,SessionAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -12,6 +13,7 @@ from rest_framework.response import Response
 
 # 사용자의 관심사 기반 추천 게시물 출력
 @api_view(['GET'])
+@authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def recommend(request):
     bookposts=[]
