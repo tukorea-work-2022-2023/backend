@@ -111,3 +111,13 @@ class Study(models.Model):
     recruit_state = models.CharField(null=False, default='모집중', max_length=100, verbose_name="스터디 모집 상태")
     class Meta:
         db_table = 'study'
+
+# 대여 일수
+class UserRental(models.Model):
+    user = models.ForeignKey(UserData, on_delete=models.CASCADE)
+    book = models.ForeignKey(bookPost, on_delete=models.CASCADE)
+    rent_start_date = models.DateField(default=timezone.now)
+    rent_end_date = models.DateField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.book.title}"

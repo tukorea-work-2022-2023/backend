@@ -1,4 +1,7 @@
 #from django.shortcuts import render
+from django.http import JsonResponse
+from django.utils.datetime_safe import date
+
 from .models import *
 from .serializers import bookCommentSerializer, bookPostSerializer, bookPostCreateSerializer, StudySerializer
 from .serializers import bookCommentSerializer,bookPostSerializer,bookPostCreateSerializer,bookCommentCreateSerializer
@@ -42,6 +45,7 @@ class bookPostViewSet(viewsets.ModelViewSet):
 
     queryset = bookPost.objects.all()
     authentication_classes = [JWTAuthentication]
+    #authentication_classes = [BasicAuthentication,SessionAuthentication]
     permission_classes = [CustomReadOnly,IsAuthenticated]
 
     filter_backends = [DjangoFilterBackend]
@@ -195,6 +199,30 @@ class StudyListByBookPost(generics.ListAPIView):
         return Study.objects.filter(book_post_id=book_post_id)
 
 
+
+# 대여 일자에 따른 대여 일수
+@api_view(["POST"])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def create_rental(request,pk):
+    book = bookPost.objects.get(pk=pk)
+    rental_days = request.data.get('rental_days')
+    start_date = timezone.now().date()
+    print(start_date)
+    end_date = start_date + timedelta(days=rental_days)
+    print(end_date)
+
+    UserRental.objects.create(user=request.user, book=book, rent_start_date=start_date, rent_end_date=end_date)
+
+    book.rent_state="대여중"
+    book.rent_start_date = start_date
+    book.rent_end_date = end_date
+
+    book.save()
+
+    return Response({'message': 'Rental created successfully.'})
+
+
 # - 마이페이지 -
 # 내가 등록한 게시물
 class MyPageView(APIView):
@@ -209,34 +237,46 @@ class MyPageView(APIView):
 
 
 
-# 내가 찜한 게시물
-# class MyLikeView(APIView):
-#     authentication_classes = [JWTAuthentication]
-#
-#     def get(self, request):
-#         user = request.user.id
-#         likes = like_post.objects.filter(user_id=user).order_by("-id")
-#
-#         serialized_data = bookPostSerializer(likes, many=True).data
-#
-#         return Response(serialized_data, status=status.HTTP_200_OK)
+#내가 찜한 게시물
+class LikeListByUser(generics.ListAPIView):
+    serializer_class = bookPostSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return bookPost.objects.filter(like__in=[self.request.user])
 
 
-# 대여 일자에 따른 대여 일수
-@api_view(["POST"])
+
+# 내가 대여한 책 대여일수 보기
+@api_view(["GET"])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
-def create_rental(request,pk):
-    book = bookPost.objects.get(pk=pk)
-    rental_days = request.data.get('rental_days')
-    start_date = timezone.now().date()
-    print(start_date)
-    end_date = start_date + timedelta(days=rental_days)
-    print(end_date)
-    book.rent_state="대여중"
-    book.rent_start_date = start_date
-    book.rent_end_date = end_date
+def my_rental_detail(request):
+    # 내가 대여한 게시물들의 대여 상태 정보를 조회합니다.
+    rental_statuses = UserRental.objects.filter(user=request.user)
 
-    book.save()
 
-    return Response({'message': 'Rental created successfully.'})
+    rental_details = []
+    for status in rental_statuses:
+        book = status.book
+        # 대여 종료일이 없는 경우
+        if not status.rent_end_date:
+            rental_details.append({
+                'book_title': book.title,
+                'rental_days': None
+            })
+        else:
+            # 대여 종료일이 있는 경우 대여 일수를 계산합니다.
+            today = date.today()
+            rental_days = (status.rent_end_date - today).days
+            rental_details.append({
+                'book_title': book.title,
+                'rental_days': rental_days
+            })
+
+    # 대여 일수 정보를 JSON 형태로 응답합니다.
+    if not rental_details:
+        return JsonResponse({'status': 'success', 'message': '대여한 것이 없습니다.'}, status=200)
+    else:
+        return JsonResponse({'status': 'success', 'rental_details': rental_details}, status=200)
