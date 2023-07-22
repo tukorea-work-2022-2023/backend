@@ -15,6 +15,8 @@ router.register('bookPostComment',bookCommentViewSet,basename='bookPostComment')
 # 스캔한 책 정보
 router.register('bookSearch',bookSearchViewSet,basename='bookSearch')
 
+# 스터디 게시물
+router.register('study',StudyViewSet,basename='study')
 
 
 urlpatterns=router.urls+[
@@ -24,5 +26,6 @@ urlpatterns=router.urls+[
     path('mypage/',MyPageView.as_view(),name='mypage'),
     #path('mylike/',MyLikeView.as_view(),name='mylike'),
     path('create_rental/<int:pk>/rent/', create_rental, name='create_rental'),
+    path('study/list/<int:book_post_id>/', StudyListByBookPost.as_view(), name='study-list-by-bookpost')
 
 ]

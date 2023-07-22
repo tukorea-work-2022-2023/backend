@@ -1,8 +1,8 @@
 #from django.shortcuts import render
 from .models import *
-from .serializers import bookCommentSerializer, bookPostSerializer, bookPostCreateSerializer
+from .serializers import bookCommentSerializer, bookPostSerializer, bookPostCreateSerializer, StudySerializer
 from .serializers import bookCommentSerializer,bookPostSerializer,bookPostCreateSerializer,bookCommentCreateSerializer
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.decorators import api_view,permission_classes,authentication_classes
 from rest_framework.authentication import TokenAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -42,7 +42,6 @@ class bookPostViewSet(viewsets.ModelViewSet):
 
     queryset = bookPost.objects.all()
     authentication_classes = [JWTAuthentication]
-    #authentication_classes = [BasicAuthentication,SessionAuthentication]
     permission_classes = [CustomReadOnly,IsAuthenticated]
 
     filter_backends = [DjangoFilterBackend]
@@ -60,19 +59,7 @@ class bookPostViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         profile = Profile.objects.get(user=self.request.user)
         serializer.save(user=self.request.user, profile=profile)
-        # tags_str을 파싱하여 tags_list로 변환
-        # tags = self.request.data.get('tags')
-        #
-        # if tags is None:
-        #     tags_list = []
-        # else:
-        #     try:
-        #         tags_list = json.loads(tags)
-        #     except ValueError:
-        #         tags_list = []
-        # serializer.save(user=self.request.user, profile=profile, tags_list=tags_list)
-        # instance = serializer.instance
-        # instance.tags.set(tags_list)
+
 
     # 조회수 기능
     def retrieve(self, request, pk=None):
@@ -136,7 +123,6 @@ class bookCommentViewSet(viewsets.ModelViewSet):
     """댓글 등록/조회/수정/삭제"""
     queryset = bookComment.objects.all()
     authentication_classes = [JWTAuthentication]
-    #authentication_classes = [BasicAuthentication, SessionAuthentication]
     permission_classes = [CustomReadOnly,IsAuthenticated]
 
     def get_serializer_class(self):
@@ -184,6 +170,30 @@ def barcode_book_info(request):
 
     else:
         return Response({'message': book_result})
+
+# - 스터디 -
+class StudyViewSet(viewsets.ModelViewSet):
+    queryset = Study.objects.all()
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['user', 'book_post']
+
+    def get_serializer_class(self):
+        return StudySerializer
+
+    def perform_create(self, serializer):
+        profile = Profile.objects.get(user=self.request.user)
+        serializer.save(user=self.request.user,profile=profile)
+
+class StudyListByBookPost(generics.ListAPIView):
+    serializer_class = StudySerializer
+
+    def get_queryset(self):
+        book_post_id = self.kwargs['book_post_id']
+        return Study.objects.filter(book_post_id=book_post_id)
+
 
 # - 마이페이지 -
 # 내가 등록한 게시물

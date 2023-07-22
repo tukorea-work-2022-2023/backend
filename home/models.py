@@ -106,6 +106,8 @@ class Study(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     created_at = models.DateField(auto_now_add=True, null=False, blank=False)
     headcount = models.PositiveIntegerField(default=0, verbose_name ="스터디 인원")
-    study_period = models.DurationField()
+    study_period = models.IntegerField()
+    study_content = models.TextField(null=False,default = '',verbose_name="스터디 설명")
+    recruit_state = models.CharField(null=False, default='모집중', max_length=100, verbose_name="스터디 모집 상태")
     class Meta:
         db_table = 'study'
