@@ -22,7 +22,8 @@ urlpatterns=router.urls+[
     path('barcode_bookInfo',barcode_book_info,name='book_Info'),
     path('bookPost/tagged/<str:tag_name>/', BookListByTag.as_view(), name='book_list_by_tag'),
     path('mypage/',MyPageView.as_view(),name='mypage'),
-    #path('mylike/',MyLikeView.as_view(),name='mylike'),
+    path('mylike/',LikeListByUser.as_view(),name='mylike'),
+    path('my_rent/', my_rental_detail, name='my-rent'),
     path('create_rental/<int:pk>/rent/', create_rental, name='create_rental'),
 
 ]
