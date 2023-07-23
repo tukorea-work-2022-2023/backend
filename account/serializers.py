@@ -10,6 +10,8 @@ from rest_framework.validators import UniqueValidator # 이메일 중복 방지�
 from django.contrib.auth import authenticate
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+
 from account.models import Profile, UserData
 from statuscode import *
 
@@ -46,14 +48,22 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                 return data1
 
             else:
-                data1 = "success"
+                data = {}
+                user_id = name.pk
+                refresh = RefreshToken.for_user(name)
+                new_data = {
+                    'user_id': user_id,
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token)
+                }
+                data.update(new_data)
+
 
         else:
 
             data1 = VAILDEMAIL
             return data1
 
-        data = super(CustomTokenObtainPairSerializer, self).validate(attrs)
 
         return data
 
