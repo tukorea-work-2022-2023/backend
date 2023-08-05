@@ -1,11 +1,12 @@
 #from django.shortcuts import render
 from .models import *
-from .serializers import majorCommentSerializer,majorPostSerializer,majorPostCreateSerializer,majorCommentCreateSerializer
-from rest_framework import viewsets
-from rest_framework.decorators import api_view,permission_classes
+from .serializers import majorCommentSerializer,majorPostSerializer,majorPostCreateSerializer,majorCommentCreateSerializer,StudySerializer
+from rest_framework import viewsets,generics
+from rest_framework.decorators import api_view,permission_classes,authentication_classes
 from rest_framework.authentication import BasicAuthentication,SessionAuthentication,TokenAuthentication
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 import json
 from rest_framework import filters
 from django.views.generic import ListView
@@ -38,7 +39,7 @@ class majorPostViewSet(viewsets.ModelViewSet):
 
 
     queryset = majorPost.objects.all()
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
     #authentication_classes = [BasicAuthentication,SessionAuthentication]
     permission_classes = [CustomReadOnly,IsAuthenticated]
 
@@ -113,7 +114,9 @@ class MajorListByTag(APIView):
 
 # 장바구니 기능
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])  # 회원가입한 User라면 모두 진입 가능
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+# 회원가입한 User라면 모두 진입 가능
 def like_post(request, pk):
     """찜 기능: GET"""
     post = get_object_or_404(majorPost, pk=pk)
@@ -137,7 +140,7 @@ def like_post(request, pk):
 class majorCommentViewSet(viewsets.ModelViewSet):
     """댓글 등록/조회/수정/삭제"""
     queryset = majorComment.objects.all()
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [JWTAuthentication]
     #authentication_classes = [BasicAuthentication, SessionAuthentication]
     permission_classes = [CustomReadOnly,IsAuthenticated]
 
@@ -167,6 +170,7 @@ class major_booksearchViewSet(viewsets.ModelViewSet):
 
 # 바코드를 가지고 해당 서적 출력
 @api_view(['GET'])
+@authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def barcode_book_info(request):
     ItemId = request.query_params.get('ItemId')
@@ -189,5 +193,102 @@ def barcode_book_info(request):
         return Response({'message': book_result})
 
 
+# - 스터디 -
+class StudyViewSet(viewsets.ModelViewSet):
+    queryset = Study.objects.all()
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['user', 'major_post']
+
+    def get_serializer_class(self):
+        return StudySerializer
+
+    def perform_create(self, serializer):
+        profile = Profile.objects.get(user=self.request.user)
+        serializer.save(user=self.request.user,profile=profile)
+
+class StudyListByMajorPost(generics.ListAPIView):
+    serializer_class = StudySerializer
+
+    def get_queryset(self):
+        major_post_id = self.kwargs['major_post_id']
+        return Study.objects.filter(major_post_id=major_post_id)
 
 
+# 대여 일자에 따른 대여 일수
+@api_view(["POST"])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def create_rental(request,pk):
+    book = majorPost.objects.get(pk=pk)
+    rental_days = request.data.get('rental_days')
+    start_date = timezone.now().date()
+    print(start_date)
+    end_date = start_date + timedelta(days=rental_days)
+    print(end_date)
+
+    UserRental.objects.create(user=request.user, book=book, rent_start_date=start_date, rent_end_date=end_date)
+
+    book.rent_state="대여중"
+    book.rent_start_date = start_date
+    book.rent_end_date = end_date
+
+    book.save()
+
+    return Response({'message': 'Rental created successfully.'})
+
+# - 마이페이지 -
+# 내가 등록한 게시물
+class MyPageView(APIView):
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        user = request.user.id
+        posts = majorPost.objects.filter(user_id=user).order_by("-id")
+        serialized_data = majorPostSerializer(posts, many=True).data
+
+        return Response(serialized_data, status=status.HTTP_200_OK)
+
+#내가 찜한 게시물
+class LikeListByUser(generics.ListAPIView):
+    serializer_class = majorPostSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return majorPost.objects.filter(like__in=[self.request.user])
+
+# 내가 대여한 책 대여일수 보기
+@api_view(["GET"])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def my_rental_detail(request):
+    # 내가 대여한 게시물들의 대여 상태 정보를 조회합니다.
+    rental_statuses = UserRental.objects.filter(user=request.user)
+
+
+    rental_details = []
+    for status in rental_statuses:
+        book = status.book
+        # 대여 종료일이 없는 경우
+        if not status.rent_end_date:
+            rental_details.append({
+                'major_title': book.title,
+                'rental_days': None
+            })
+        else:
+            # 대여 종료일이 있는 경우 대여 일수를 계산합니다.
+            today = date.today()
+            rental_days = (status.rent_end_date - today).days
+            rental_details.append({
+                'major_title': book.title,
+                'rental_days': rental_days
+            })
+
+    # 대여 일수 정보를 JSON 형태로 응답합니다.
+    if not rental_details:
+        return JsonResponse({'status': 'success', 'message': '대여한 것이 없습니다.'}, status=200)
+    else:
+        return JsonResponse({'status': 'success', 'rental_details': rental_details}, status=200)

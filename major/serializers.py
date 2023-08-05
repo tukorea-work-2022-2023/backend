@@ -1,11 +1,11 @@
 import json
-
+from datetime import timedelta
 from rest_framework.exceptions import ValidationError
 from django.core import serializers
 from rest_framework import serializers
 from account.models import UserData
 from account.serializers import ProfileSerializer
-from .models import majorPost,majorComment
+from .models import majorPost,majorComment,Study
 from taggit_serializer.serializers import TaggitSerializer,TagListSerializerField
 from collections import OrderedDict
 
@@ -44,7 +44,7 @@ class majorPostSerializer(TaggitSerializer,serializers.ModelSerializer):
         model = majorPost
         fields = (
         'pk', 'profile','category','writer', 'publisher', 'title', 'content', 'image', 'created_at', 'sell_price', 'comment',
-        'tags', 'state', 'summary', 'state_image','rent_state')
+        'tags', 'state', 'summary', 'state_image','rent_state','pub_date','hits','rent_start_date','rent_end_date')
 
 
     def create(self, validated_data):
@@ -61,7 +61,14 @@ class majorPostSerializer(TaggitSerializer,serializers.ModelSerializer):
 class majorPostCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = majorPost
-        fields = ('category','title', 'writer','publisher','content','image','sell_price','summary','state_image','tags','state','pub_date')
+        fields = ('category','title', 'writer','publisher','content','image','sell_price','summary','state_image','tags','state','pub_date','rent_start_date','rent_end_date')
 
 
 
+class StudySerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer(read_only=True)
+    major_post = serializers.PrimaryKeyRelatedField(queryset=majorPost.objects.all())
+
+    class Meta:
+        model = Study
+        fields = ('pk','profile','book_post', 'study_content', 'created_at', 'headcount','study_period', 'recruit_state')

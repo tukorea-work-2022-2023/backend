@@ -2,8 +2,7 @@ from django.db import models
 from django.urls import reverse
 from account.models import UserData,Profile
 from taggit.managers import TaggableManager #태그 기능을 함
-
-
+from django.utils import timezone
 class majorPost(models.Model):
 
     # 1. 책 제목
@@ -64,7 +63,11 @@ class majorPost(models.Model):
     # 19. 출판일
     pub_date = models.CharField(null=False, default='', max_length=100, verbose_name="출판일")
 
+    # 20. 대여 시작 일자
+    rent_start_date = models.DateField(null=True, verbose_name="대여 시작 일자")
 
+    # 21. 대여 끝난 일자
+    rent_end_date = models.DateField(null=True, verbose_name="대여 끝난 일자")
 
     #tags_list = models.CharField(max_length=100,blank=True)
 
@@ -95,6 +98,18 @@ class Study(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE,related_name='major_profile')
     created_at = models.DateField(auto_now_add=True, null=False, blank=False)
     headcount = models.PositiveIntegerField(default=0, verbose_name ="스터디 인원")
-    study_period = models.DurationField()
+    study_period = models.IntegerField()
+    study_content = models.TextField(null=False, default='', verbose_name="스터디 설명")
+    recruit_state = models.CharField(null=False, default='모집중', max_length=100, verbose_name="스터디 모집 상태")
     class Meta:
         db_table = 'major_study'
+
+# 대여 일수
+class UserRental(models.Model):
+    user = models.ForeignKey(UserData, on_delete=models.CASCADE,related_name='major_userData')
+    book = models.ForeignKey(majorPost, on_delete=models.CASCADE)
+    rent_start_date = models.DateField(default=timezone.now)
+    rent_end_date = models.DateField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.book.title}"
