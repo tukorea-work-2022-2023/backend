@@ -40,6 +40,7 @@ AUTH_USER_MODEL = 'account.UserData'
 # Application definition
 
 INSTALLED_APPS = [
+    "baton",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -61,7 +62,7 @@ INSTALLED_APPS = [
     'django_filters',
     'taggit_serializer',
     'channels',
-
+    "baton.autodiscover",
 ]
 
 
@@ -103,6 +104,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+
 ]
 
 ROOT_URLCONF = "itbook_service.urls"

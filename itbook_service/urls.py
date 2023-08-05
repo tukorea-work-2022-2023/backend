@@ -8,8 +8,12 @@ from chat import routing
 
 urlpatterns = [
 
+
     #관라자 페이지
     path("admin/", admin.site.urls),
+
+    #관리자페이지 테마
+    path("baton/", include('baton.urls')),
 
     #restframework 관리자 페이지
     path('api-auth/', include('rest_framework.urls')),
