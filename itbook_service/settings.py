@@ -66,6 +66,20 @@ INSTALLED_APPS = [
 ]
 
 
+
+BATON ={
+    'SITE_HEADER': 'IT-BOOK',
+    'SITE_TITLE': 'IT-BOOK',
+    'INDEX_TITLE': 'Site administration',
+    'SUPPORT HREF': "https://github.com/tukorea-work-2022-2023",
+    'COPYRIGHT': "copyright © 2023 IT-BOOK",
+    'POWERED_BY': '<a href-"https://github.com/tukorea-work-2022-2023">IT-BOOK</a>',
+    'MENU TITLE': 'MENU TITLE',
+}
+
+
+
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         #'rest_framework.authentication.TokenAuthentication',
