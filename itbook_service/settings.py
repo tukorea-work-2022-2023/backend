@@ -75,6 +75,7 @@ BATON ={
     'COPYRIGHT': "copyright © 2023 IT-BOOK",
     'POWERED_BY': '<a href-"https://github.com/tukorea-work-2022-2023">IT-BOOK</a>',
     'MENU TITLE': 'MENU TITLE',
+    'THEME': 'custom.css',
 }
 
 
@@ -188,6 +189,14 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
+
+# settings.py
+# STATICFILES_DIRS = [
+#     BASE_DIR / 'staticfiles',
+# ]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 
 MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
