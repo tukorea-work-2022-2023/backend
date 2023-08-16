@@ -26,6 +26,14 @@ class bookPostAdmin(admin.ModelAdmin):
         extra_context = {'title': '게시물 목록'}
         return super().changelist_view(request, extra_context)
 
+
+    # 세부적인 페이지 커스텀
+    def changeform_view(self, request, object_id, form_url="", extra_context=None):
+        if object_id:
+            post=bookPost.objects.get(pk=object_id)
+            extra_context={'title':f'{post.title} _ {post.user} 게시물 정보 수정하기'}
+        return super().changeform_view(request,object_id,form_url,extra_context)
+
     styled_rent_status.short_description = '대여 상태'
 
 
@@ -49,6 +57,14 @@ class rentAdmin(admin.ModelAdmin):
         # 우리가 원하는 동작을 하고 그 다음에 원래 만들어져 있는 함수를 호출해라
         extra_context = {'title': '대여 목록'}
         return super().changelist_view(request, extra_context)
+
+    # 세부적인 페이지 커스텀
+    def changeform_view(self, request, object_id, form_url="", extra_context=None):
+        if object_id:
+            rental=UserRental.objects.get(pk=object_id)
+            extra_context={'title':f'{rental.book.title} _ {rental.book.user} 대여 정보 수정하기'}
+        return super().changeform_view(request,object_id,form_url,extra_context)
+
 
     styled_rent_end_date.short_description = '반납일'
     get_book_title.short_description='게시물'

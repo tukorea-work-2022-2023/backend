@@ -205,20 +205,24 @@ class StudyListByBookPost(generics.ListAPIView):
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def create_rental(request,pk):
-    book = bookPost.objects.get(pk=pk)
+    post = get_object_or_404(bookPost, pk=pk)
+    if request.user == post.user:
+        return Response({'status': status.HTTP_403_FORBIDDEN,
+                         'message': '본인의 게시글은 대여할 수 없습니다.'})
+    #book = bookPost.objects.get(pk=pk)
     rental_days = request.data.get('rental_days')
     start_date = timezone.now().date()
     print(start_date)
     end_date = start_date + timedelta(days=rental_days)
     print(end_date)
 
-    UserRental.objects.create(user=request.user, book=book, rent_start_date=start_date, rent_end_date=end_date)
+    UserRental.objects.create(user=request.user, book=post, rent_start_date=start_date, rent_end_date=end_date)
 
-    book.rent_state="대여중"
-    book.rent_start_date = start_date
-    book.rent_end_date = end_date
+    post.rent_state="대여중"
+    post.rent_start_date = start_date
+    post.rent_end_date = end_date
 
-    book.save()
+    post.save()
 
     return Response({'message': 'Rental created successfully.'})
 

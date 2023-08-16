@@ -40,8 +40,7 @@ AUTH_USER_MODEL = 'account.UserData'
 # Application definition
 
 INSTALLED_APPS = [
-    "baton",
-    "django.contrib.admin",
+
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -53,6 +52,8 @@ INSTALLED_APPS = [
     "major.apps.MajorConfig",
     "setting.apps.SettingConfig",
     "account.apps.UserConfig",
+    "baton",
+    "django.contrib.admin",
     "taggit_templatetags2",
     "taggit.apps.TaggitAppConfig",
     "rest_framework",
@@ -190,7 +191,7 @@ USE_TZ = False
 
 STATIC_URL = "static/"
 
-# settings.py
+#settings.py
 # STATICFILES_DIRS = [
 #     BASE_DIR / 'staticfiles',
 # ]
