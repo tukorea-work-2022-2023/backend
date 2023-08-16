@@ -114,9 +114,9 @@ class Study(models.Model):
 
 # 대여 일수
 class UserRental(models.Model):
-    user = models.ForeignKey(UserData, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserData, on_delete=models.CASCADE,verbose_name="대여자")
     book = models.ForeignKey(bookPost, on_delete=models.CASCADE)
-    rent_start_date = models.DateField(default=timezone.now)
+    rent_start_date = models.DateField(default=timezone.now,verbose_name="대여 시작일")
     rent_end_date = models.DateField(blank=True, null=True)
 
     def __str__(self):
