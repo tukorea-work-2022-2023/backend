@@ -94,9 +94,9 @@ class majorComment(models.Model):
 # 스터디
 class Study(models.Model):
     major_post=models.ForeignKey(majorPost,related_name='study',null=False,blank=False,on_delete=models.CASCADE)
-    user=models.ForeignKey(UserData,null=False,blank=False,on_delete=models.CASCADE,related_name='major_study')
+    user=models.ForeignKey(UserData,null=False,blank=False,on_delete=models.CASCADE,related_name='major_study',verbose_name ="생성자")
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE,related_name='major_profile')
-    created_at = models.DateField(auto_now_add=True, null=False, blank=False)
+    created_at = models.DateField(auto_now_add=True, null=False, blank=False,verbose_name ="생성 일자")
     headcount = models.PositiveIntegerField(default=0, verbose_name ="스터디 인원")
     study_period = models.IntegerField()
     study_content = models.TextField(null=False, default='', verbose_name="스터디 설명")

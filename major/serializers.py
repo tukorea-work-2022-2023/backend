@@ -71,4 +71,4 @@ class StudySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Study
-        fields = ('pk','profile','book_post', 'study_content', 'created_at', 'headcount','study_period', 'recruit_state')
+        fields = ('pk','profile','major_post', 'study_content', 'created_at', 'headcount','study_period', 'recruit_state')

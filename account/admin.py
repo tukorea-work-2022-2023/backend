@@ -17,9 +17,6 @@ class UserAdmin(BaseUserAdmin):
     inlines = (ProfileInline,)
     ordering = ['name']
 
-def changelist_view(self, request, extra_context=None) :
-    extra_context={'title':'사용자 목록'}
-    return super ().changelist_view(request, extra_context=extra_context)
 
 admin.site.register(UserData, UserAdmin)
 
