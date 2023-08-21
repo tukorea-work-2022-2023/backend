@@ -17,4 +17,6 @@ class UserAdmin(BaseUserAdmin):
     inlines = (ProfileInline,)
     ordering = ['name']
 
+
 admin.site.register(UserData, UserAdmin)
+

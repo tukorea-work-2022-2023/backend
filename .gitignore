@@ -158,7 +158,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# pytype static type analyzer
+# pytype staticfiles type analyzer
 .pytype/
 
 # Cython debug symbols
@@ -346,3 +346,4 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/django,pycharm,windows,macos
 
 my_settings.py
+class/views.py

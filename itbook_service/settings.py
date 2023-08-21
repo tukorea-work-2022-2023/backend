@@ -40,8 +40,7 @@ AUTH_USER_MODEL = 'account.UserData'
 # Application definition
 
 INSTALLED_APPS = [
-    "baton",
-    "django.contrib.admin",
+
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -53,6 +52,8 @@ INSTALLED_APPS = [
     "major.apps.MajorConfig",
     "setting.apps.SettingConfig",
     "account.apps.UserConfig",
+    "baton",
+    "django.contrib.admin",
     "taggit_templatetags2",
     "taggit.apps.TaggitAppConfig",
     "rest_framework",
@@ -64,6 +65,21 @@ INSTALLED_APPS = [
     'channels',
     "baton.autodiscover",
 ]
+
+
+
+BATON ={
+    'SITE_HEADER': 'IT-BOOK',
+    'SITE_TITLE': 'IT-BOOK',
+    'INDEX_TITLE': 'Site administration',
+    'SUPPORT HREF': "https://github.com/tukorea-work-2022-2023",
+    'COPYRIGHT': "copyright © 2023 IT-BOOK",
+    'POWERED_BY': '<a href-"https://github.com/tukorea-work-2022-2023">IT-BOOK</a>',
+    'MENU TITLE': 'MENU TITLE',
+    'THEME': 'custom.css',
+}
+
+
 
 
 REST_FRAMEWORK = {
@@ -174,6 +190,14 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
+
+#settings.py
+# STATICFILES_DIRS = [
+#     BASE_DIR / 'staticfiles',
+# ]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 
 MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')

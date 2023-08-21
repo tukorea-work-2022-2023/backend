@@ -355,7 +355,7 @@ import random
 
 from selenium.webdriver.chrome.service import Service
 
-service = Service(ChromeDriverManager().install())
+service = Service()
 
 # f-string
 

@@ -33,3 +33,4 @@ django-taggit-autosuggest==0.4.1
 channels==4.0.0
 firebase-admin==6.1.0
 django-baton==2.7.1
+pyOpenSSL==23.2.0
