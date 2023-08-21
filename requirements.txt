@@ -13,6 +13,7 @@ django-taggit==3.1.0
 django-taggit-templatetags2==1.6.1
 django-widget-tweaks==1.4.12
 djangorestframework==3.14.0
+djangorestframework-simplejwt==5.2.2
 idna==3.4
 importlib-metadata==6.0.0
 Markdown==3.4.1
@@ -28,3 +29,7 @@ soupsieve==2.3.2.post1
 sqlparse==0.4.3
 urllib3==1.26.14
 zipp==3.11.0
+django-taggit-autosuggest==0.4.1
+channels==4.0.0
+firebase-admin==6.1.0
+django-baton==2.7.1
