@@ -37,6 +37,7 @@ CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:3000' ,'http://localhost:8000']
 
 AUTH_USER_MODEL = 'account.UserData'
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -106,8 +107,8 @@ SIMPLE_JWT = {
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com' # 메일 호스트 서버
 EMAIL_PORT = 587 # gmail과 통신하는 포트
-EMAIL_HOST_USER = 'chajiwon3168@gmail.com' # 발신할 이메일
-EMAIL_HOST_PASSWORD = 'onbuwecilqrhkyhd' # 앱 비밀번호
+EMAIL_HOST_USER = my_settings.EMAIL_HOST_USER # 발신할 이메일
+EMAIL_HOST_PASSWORD = my_settings.EMAIL_HOST_PASSWORD
 EMAIL_USE_TLS = True # TLS 보안 방법
 
 
