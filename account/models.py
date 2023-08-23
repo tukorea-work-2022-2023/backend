@@ -9,12 +9,15 @@ from django.db import models
 class UserManager(BaseUserManager):
     use_in_migration = True
 
-    def create_user(self, email, password=None, **extra_fields):
+    def create_user(self, email, password=None, verification_code=None, **extra_fields):
         if not email:
             raise ValueError('Email is Required')
+
         user = self.model(email=self.normalize_email(email), **extra_fields)
         user.set_password(password)
+        user.verification_code = verification_code
         user.save(using=self._db)
+
         return user
 
     def create_superuser(self, email, password, **extra_fields):
@@ -35,6 +38,7 @@ class UserData(AbstractUser):
     username = None
     email = models.EmailField(max_length=100, unique=True)
     name = models.CharField(max_length=100, unique=True)
+    verification_code = models.CharField(max_length=100, blank=True, null=True)
     is_admin = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True, null=False)
     updated_at = models.DateTimeField(auto_now=True, null=False)

@@ -24,10 +24,15 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = UserData.objects.create(email=validated_data['email'],
-                                       name=validated_data['name']
+                                       name=validated_data['name'],
+
                                        )
 
         user.set_password(validated_data['password'])
+        # 이메일 도메인 확인
+        if not user.email.endswith('ac.kr'):
+            raise serializers.ValidationError({'email': ['이메일 형식이 올바르지 않습니다.']})
+
         user.save()
         return user
 
