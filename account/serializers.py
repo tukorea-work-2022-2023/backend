@@ -5,6 +5,7 @@ from django.contrib.auth.password_validation import validate_password # django �
 
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token # token 모델
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.validators import UniqueValidator # 이메일 중복 방지를 위한 검증 도구
 
 from django.contrib.auth import authenticate
@@ -48,27 +49,17 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         if name:
             if not name.check_password(od2['password']):
+                raise AuthenticationFailed('Invalid password')
 
-                data1 = VAILDPASSWORD
-                return data1
-
-            else:
-                data = {}
-                user_id = name.pk
-                refresh = RefreshToken.for_user(name)
-                new_data = {
-                    'user_id': user_id,
-                    'refresh': str(refresh),
-                    'access': str(refresh.access_token)
-                }
-                data.update(new_data)
-
+            refresh = RefreshToken.for_user(name)
+            data = {
+                'user_id': name.pk,
+                'refresh': str(refresh),
+                'access': str(refresh.access_token)
+            }
 
         else:
-
-            data1 = VAILDEMAIL
-            return data1
-
+            raise AuthenticationFailed('Invalid email')
 
         return data
 
