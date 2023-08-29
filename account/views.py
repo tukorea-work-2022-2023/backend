@@ -43,10 +43,12 @@ class RegisterView(APIView):
             )
 
         email = serializer.validated_data['email']
+        name = serializer.validated_data['name']
         send_email_verification_code(email, verification_code)
 
         # 회원 정보를 저장합니다.
         user = UserData.objects.create_user(
+            name=name,
             email=email,
             password=serializer.validated_data['password'],
             verification_code=verification_code,
