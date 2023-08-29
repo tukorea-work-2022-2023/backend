@@ -236,6 +236,10 @@ class MyPageView(APIView):
         user = request.user.id
         posts = bookPost.objects.filter(user_id=user).order_by("-id")
         serialized_data = bookPostSerializer(posts, many=True).data
+        for post in serialized_data:
+            post['image'] = request.build_absolute_uri(post['image'])
+            post['state_image'] = request.build_absolute_uri(post['state_image'])
+            post['profile']['image'] = request.build_absolute_uri(post['profile']['image'])
 
         return Response(serialized_data, status=status.HTTP_200_OK)
 
